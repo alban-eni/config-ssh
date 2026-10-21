@@ -18,6 +18,7 @@
         name: bind
         state: present
     - name: Activer BIND
+      ansible.builtin.service:
         name: named
         state: started
         enabled: yes
