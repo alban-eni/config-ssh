@@ -1,0 +1,14 @@
+- name: Configuration des machines de l'infra
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Sécuriser SSH
+      ansible.builtin.blockinfile:
+        path: /etc/ssh/sshd_config
+        append_newline: true
+        prepend_newline: true
+        backup: yes
+        block: |
+          Match User ansible
+            PasswordAuthentication no
