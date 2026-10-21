@@ -12,3 +12,18 @@
         block: |
           Match User ansible
             PasswordAuthentication no
+      notify: Redémarrer SSH
+    - name: Installer BIND
+      ansible.builtin.dnf:
+        name: bind
+        state: present
+    - name: Activer BIND
+        name: named
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Redémarrer SSH
+      service:
+        name: sshd
+        state: restarted
