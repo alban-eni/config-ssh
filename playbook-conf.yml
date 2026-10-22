@@ -30,7 +30,7 @@
         src: templates/named.conf.j2
         dest: /etc/named.conf
         owner: root
-        groupe: named
+        group: named
         mode: '0640'
         backup: yes
       notify: Redémarrer BIND
