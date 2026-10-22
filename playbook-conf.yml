@@ -1,6 +1,9 @@
 - name: Configuration des machines de l'infra
-  hosts: all
+  hosts: hosts
   become: yes
+
+  vars_files:
+    - vars/bind_vars.yml
 
   tasks:
     - name: Sécuriser SSH
@@ -22,9 +25,21 @@
         name: named
         state: started
         enabled: yes
+    - name: Configurer le DNS redirecteur de BIND (Hôte cible)
+      template:
+        src: templates/named.conf.j2
+        dest: /etc/named.conf
+        owner: root
+        groupe: named
+        mode: '0640'
+      notify: Redémarrer BIND
 
   handlers:
     - name: Redémarrer SSH
       service:
         name: sshd
+        state: restarted
+    - name: Redémarrer BIND
+      service:
+        name: named
         state: restarted
