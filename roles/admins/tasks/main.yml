@@ -1,0 +1,23 @@
+# tasks file for admins
+- name: Créer l'utilisateur avec son profil et ses groupes
+  ansible.builtin.user:
+    name: "{{ username }}"
+    comment: "{{ description }}"
+    shell: /bin/bash
+    groups: "sudo"
+    append: yes
+    password: "{{ temp_password_hash | password_hash('sha512') }}"
+    update_password: on_create
+    state: present
+  no_log: true
+
+- name: Forcer le changement de mot de passe à la première connexion
+  ansible.builtin.command: "passwd -e {{ username }}"
+  register: passwd_output
+  changed_when: true
+
+- name: Pousser la clé SSH de l'admin
+  ansible.posix.authorized_key:
+    user: "{{ username }}"
+    state: present
+    key: "{{ ssh-key }}"
