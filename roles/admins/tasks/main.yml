@@ -20,4 +20,4 @@
   ansible.posix.authorized_key:
     user: "{{ username }}"
     state: present
-    key: "{{ ssh-key }}"
+    key: "{{ ssh_key }}"
