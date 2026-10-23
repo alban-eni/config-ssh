@@ -1,0 +1,6 @@
+# handlers file for named
+- name: Redémarrer BIND
+  service:
+    name: named
+    state: restarted
+

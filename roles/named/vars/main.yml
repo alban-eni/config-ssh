@@ -1,0 +1,5 @@
+# vars file for named
+bind_forwarders:
+  - "{{ ansible_default_ipv4.address }}"
+  - "86.54.11.11"
+
