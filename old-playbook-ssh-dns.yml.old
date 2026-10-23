@@ -1,0 +1,46 @@
+- name: Configuration des machines de l'infra
+  hosts: all
+  become: yes
+
+  vars_files:
+    - vars/bind_vars.yml
+
+  tasks:
+    - name: Sécuriser SSH
+      ansible.builtin.blockinfile:
+        path: /etc/ssh/sshd_config
+        append_newline: true
+        prepend_newline: true
+        backup: yes
+        block: |
+          Match User ansible
+            PasswordAuthentication no
+      notify: Redémarrer SSH
+    - name: Installer BIND
+      ansible.builtin.dnf:
+        name: bind
+        state: present
+    - name: Activer BIND
+      ansible.builtin.service:
+        name: named
+        state: started
+        enabled: yes
+    - name: Configurer le DNS redirecteur de BIND (Hôte cible)
+      template:
+        src: templates/named.conf.j2
+        dest: /etc/named.conf
+        owner: root
+        group: named
+        mode: '0640'
+        backup: yes
+      notify: Redémarrer BIND
+
+  handlers:
+    - name: Redémarrer SSH
+      service:
+        name: sshd
+        state: restarted
+    - name: Redémarrer BIND
+      service:
+        name: named
+        state: restarted

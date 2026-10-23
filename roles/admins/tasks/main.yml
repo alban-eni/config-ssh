@@ -4,7 +4,7 @@
     name: "{{ username }}"
     comment: "{{ description }}"
     shell: /bin/bash
-    groups: "sudo"
+    groups: "wheel"
     append: yes
     password: "{{ temp_password }}"
     update_password: on_create
